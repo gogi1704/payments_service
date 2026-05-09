@@ -22,3 +22,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(payments_router)
 app.include_router(webhooks_router)
+
+@app.get("/ping")
+async def ping():
+    return {"status": "payments ok"}

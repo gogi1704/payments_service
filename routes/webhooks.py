@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request
 from db.payments_repo import update_payment_status, get_payment
 from datetime import datetime, timezone
+from services.bot_client import notify_payment_success
 
 router = APIRouter()
 
@@ -27,7 +28,9 @@ async def yookassa_webhook(request: Request):
 
     if event == "payment.succeeded":
         await update_payment_status(payment_id, "succeeded", datetime.now(timezone.utc))
+        user_id = payment[1]
 
+        await notify_payment_success(user_id)
 
 
         # тут дальше будет:
