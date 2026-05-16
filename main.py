@@ -1,9 +1,10 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
-from db.database import init_db
+from db.database import init_db, periodic_sync
 from routes.payments import router as payments_router
 from routes.webhooks import router as webhooks_router
+import asyncio
 
 
 @asynccontextmanager
@@ -11,6 +12,7 @@ async def lifespan(app: FastAPI):
     # startup
     await init_db()
     print("DB initialized")
+    asyncio.create_task(periodic_sync(interval= 60))
 
     yield
 

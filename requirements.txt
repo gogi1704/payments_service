@@ -6,3 +6,6 @@ httpx
 pydantic
 aiosqlite
 httpx
+gspread
+oauth2client==4.1.3
+google-api-python-client

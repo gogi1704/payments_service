@@ -2,12 +2,12 @@ import aiosqlite
 from db.database import DB_PATH
 
 
-async def create_payment_record(payment_id: str, user_id: int, amount: float, status: str):
+async def create_payment_record(payment_id: str, user_id: int, amount: float, status: str, notify_send = False):
     async with aiosqlite.connect(DB_PATH) as db:
         await db.execute("""
-            INSERT INTO payments (payment_id, user_id, amount, status)
-            VALUES (?, ?, ?, ?)
-        """, (payment_id, user_id, amount, status))
+            INSERT INTO payments (payment_id, user_id, amount, status, notify_send)
+            VALUES (?, ?, ?, ?, ?)
+        """, (payment_id, user_id, amount, status, notify_send))
         await db.commit()
 
 

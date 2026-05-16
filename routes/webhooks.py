@@ -3,7 +3,6 @@ import asyncio
 from fastapi import APIRouter, Request
 from db.payments_repo import update_payment_status, get_payment
 from datetime import datetime, timezone
-from services.bot_client import notify_payment_success, notify_payment_canceled
 
 router = APIRouter()
 
@@ -38,7 +37,7 @@ async def yookassa_webhook(request: Request):
         )
 
         user_id = payment[1]
-        asyncio.create_task(notify_payment_success(user_id))
+        # asyncio.create_task(notify_payment_success(user_id))
 
     # 4. CANCEL
     elif event == "payment.canceled":
@@ -49,6 +48,6 @@ async def yookassa_webhook(request: Request):
             None
         )
         user_id = payment[1]
-        asyncio.create_task(notify_payment_canceled(user_id))
+        # asyncio.create_task(notify_payment_canceled(user_id))
 
     return {"ok": True}
