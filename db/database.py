@@ -102,3 +102,15 @@ async def is_already_processed(payment_id: str, status: str):
             return False
 
         return row[0] == status
+
+async def set_payment_notified(payment_id: str):
+
+    async with aiosqlite.connect(DB_PATH) as db:
+
+        await db.execute("""
+            UPDATE payments
+            SET notify_send = 1
+            WHERE payment_id = ?
+        """, (payment_id,))
+
+        await db.commit()

@@ -2,10 +2,10 @@ from fastapi import APIRouter
 
 from schemas import (
     CreatePaymentRequest,
-    CreatePaymentResponse
+    CreatePaymentResponse, RemovePaymentRequest, RemovePaymentResponse
 )
 
-from yookassa_service import create_payment
+from yookassa_service import create_payment, send_notify_complete
 
 router = APIRouter()
 
@@ -26,4 +26,15 @@ async def create_payment_route(
     )
 
     return payment
+
+@router.post(
+    "/remove-payment",
+    response_model=RemovePaymentResponse
+)
+async def create_payment_route(
+    data: RemovePaymentRequest
+):
+    payment_id = data.payment_id
+    return await send_notify_complete(payment_id)
+
 

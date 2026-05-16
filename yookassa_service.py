@@ -1,5 +1,7 @@
 import uuid
 import asyncio
+
+from db.database import set_payment_notified
 from db.payments_repo import create_payment_record
 from yookassa import Configuration, Payment
 from config import (
@@ -76,3 +78,6 @@ async def create_payment(
         "confirmation_url": payment.confirmation.confirmation_url,
         "status": payment.status
     }
+async def send_notify_complete(payment_id):
+    await set_payment_notified(payment_id)
+    return "Complete"

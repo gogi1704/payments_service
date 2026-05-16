@@ -12,3 +12,9 @@ class CreatePaymentResponse(BaseModel):
     payment_id: str
     confirmation_url: str
     status: str
+
+class RemovePaymentRequest(BaseModel):
+    payment_id: str
+
+class RemovePaymentResponse(BaseModel):
+    answer:str
