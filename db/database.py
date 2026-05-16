@@ -45,8 +45,8 @@ async def sync_from_google_sheets():
         for r in rows:
             id, payment_id, user_id, amount, status, created_at, paid_at, notify_send = r
             await db.execute(
-                "INSERT INTO payments (id, payment_id, user_id, status, created_at, paid_at, notify_send ) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (int(id), payment_id, user_id, status, created_at, paid_at, notify_send )
+                "INSERT INTO payments (id, payment_id, user_id, status, amount, created_at, paid_at, notify_send ) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (int(id), payment_id, user_id, status, amount, created_at, paid_at, notify_send )
             )
 
         await db.commit()
@@ -55,14 +55,32 @@ async def sync_from_google_sheets():
 
 async def sync_to_google_sheets():
     sheets = get_sheet()
+
     async with aiosqlite.connect(DB_PATH) as db:
-        async with db.execute("id, payment_id, user_id, status, created_at, paid_at, notify_send FROM payments") as cur:
+        async with db.execute("""
+            SELECT
+                id,
+                payment_id,
+                user_id,
+                status,
+                amount,
+                created_at,
+                paid_at,
+                notify_send
+            FROM payments
+        """) as cur:
             rows = await cur.fetchall()
 
-        sheets["payments"].clear()
-        sheets["payments"].update("A1", [["d, payment_id, user_id, status, created_at, paid_at, notify_send"]] + rows)
-    print("[✅] Данные ANAMNEZ_DB выгружены в Google Sheets")
+    sheets["payments"].clear()
 
+    sheets["payments"].update(
+        "A1",
+        [
+            ["id", "payment_id", "user_id", "status", "amount", "created_at", "paid_at", "notify_send"]
+        ] + rows
+    )
+
+    print("[✅] Данные ANAMNEZ_DB выгружены в Google Sheets")
 async def periodic_sync(interval: int = 60):
     while True:
         await asyncio.sleep(interval)
