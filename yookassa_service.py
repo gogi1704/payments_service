@@ -80,4 +80,4 @@ async def create_payment(
     }
 async def send_notify_complete(payment_id):
     await set_payment_notified(payment_id)
-    return "Complete"
+    return {"result":"Complete"}
